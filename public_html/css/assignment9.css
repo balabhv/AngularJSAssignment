@@ -1,0 +1,111 @@
+/*                                                                            
+  Name: Virinchi Balabhadrapatruni                                             
+  Email: Virinchi_Balabhadrapatruni@student.uml.edu                            
+  UMass Lowell Computer Science, 91.461 GUI Programming I                      
+  Date: 11/30/2014                                                               
+  Description: CSS File created for Assignment #9.                               
+*/ 
+
+/* set font family and font size for entire page */
+body, table {
+    font-family: Verdana, Arial, Helvetica, sans-serif ;
+    font-size: 10pt ;
+    color: #EFB100;
+}
+
+body {
+    background-image: url('../img/bgpic.jpg');
+}
+
+#maintitle {
+    font-size: 25px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    
+}
+
+p {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+/* collapse the table borders to achieve the desired effect*/
+#tblGames {
+    border-collapse: collapse ;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    color: black;
+}
+
+/* add borders and padding to the table head and body cells */
+#tblGames th, #tblGames td {
+    border: 1px solid black ;
+    padding: 2px 5px ;
+}
+
+/* reverse video header row */
+#tblGames thead tr th {
+    color: white ;
+    background-color: black ;
+}
+
+/* add white right borders to adjacent black header row cells */
+#tblGames thead tr th:nth-child( 5 ) {
+    border-right: 1px solid white ;
+}
+
+
+/* indicate that certain columns are clickable */
+#tblGames thead tr th:nth-child(2),
+#tblGames thead tr th:nth-child(3),
+#tblGames thead tr th:nth-child(4) {
+    color: black ;
+    background-color: lightgreen ;
+}
+
+/* handle rollovers on clickable columns */
+#tblGames thead tr th:nth-child(2):hover,
+#tblGames thead tr th:nth-child(3):hover,
+#tblGames thead tr th:nth-child(4):hover {
+    cursor: pointer ;
+    color: black ;
+    background-color: yellow ;
+}
+
+/* align all table body cells to the top of their cells*/
+#tblGames tbody tr td {
+    vertical-align: top ;
+}
+
+/* center the cells in the 1st and 4th columns of the table */
+#tblGames tbody tr td:nth-child(1),
+#tblGames tbody tr td:nth-child(5) {
+    text-align: center ;
+}
+
+/* set no break in date string column */
+#tblGames tbody tr td:nth-child(4) {
+    white-space: nowrap ;
+}
+
+#tblGames tbody tr:hover {
+    background-color: yellow;
+    color:black;
+}
+
+#tblGames tbody tr td {
+    background-color: rgba(255,255,255,0.6)
+}
+
+#tbl {
+    background-color: rgba(3, 175, 247, 0.4);
+    margin-top: 10px;
+    padding: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    border: 5px solid #EFB100;
+}

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<!--
+    Name: Virinchi Balabhadrapatruni                                             
+    Email: Virinchi_Balabhadrapatruni@student.uml.edu                            
+    UMass Lowell Computer Science, 91.461 GUI Programming I                      
+    Date: 11/30/2014                                                               
+    Description: Modified version of Prof. Heines's
+    Assignment #9 starter HTML File
+-->
+<html ng-app="ZeldaApp">
+    <head>
+        <meta charset="utf-8">
+        <title>List of Zelda Games</title>
+
+        <!-- this is version 1.2.27 -->
+        <script src="js/libs/angular.js/angular.js"></script>
+
+        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+
+        <!-- Professor Heines's collection of utility functions -->
+        <script src="js/jmh-utilities.js"></script>
+
+        <!-- 
+            The below script was originally written by Prof. Heines,
+            amd modified for this application.
+        -->
+        <script>
+            "use strict";  // to ensure that all variables are declared before use
+
+            // the number of the last column sorted, initialized to the Student Name column
+            var lastSortColumnNo = 3;
+            // a flag indicating whether the last sort was ascending (true) or descending (false)
+            var lastSortDescending = false;
+
+            // set up AngularJS module, note that name must be the same as that in the 
+            //    ng-app attribute of the html tag above
+            var myApp = angular.module('ZeldaApp', []);
+
+
+
+            // set a constant to the JSON file path
+            myApp.constant("jsonUrl", "json/listOfZeldaTitles.json");
+
+            // add business logic to the app controller
+            myApp.controller('ZeldaCtrl',
+                    /** Read JSON data using Ajax - adapted from Pro AngularJS, p. 149.
+                     *  @param $scope  the standard AngularJS model scope
+                     *  @param $http   the built-in AngularJS http object containing the get function
+                     *  @param jsonUrl the app constant containing the JSON file path (defined above)
+                     */
+                            function ($scope, $http, jsonUrl) {
+                                $scope.jsonData = {};              // initialize an object in the model's scope
+                                $http.get(jsonUrl)                // perform the Ajax call
+                                        .success(function (data) {      // execute this function if the Ajax succeeds
+                                            $scope.jsonData.data = data;   // set the model's jsonData.data property to the
+                                        })                               //    data returned by the Ajax call
+                                        .error(function (error) {      // execute this function if the Ajax fails
+                                            $scope.jsonData.error = error; // set the model's jsonData.error property to the
+                                        });                             //    error returned by the Ajax call
+
+
+                                // set the initial sort field (student name) and sort order (ascending)
+                                $scope.sortField = "DOR";
+                                $scope.sortDescending = false;
+
+                                /** 
+                                 *  Sort column clicked in either ascending or descending order.
+                                 *  Note that this could also be accomplished using the built-in AngularJS orderBy
+                                 *    filter and manipulating the sort field and reverse parameters.
+                                 *  Also note that this code could also have been incorporated into the ng-click 
+                                 *    directives on the table's th elements, but doing it here gave me more central
+                                 *    control, and I think that this function makes what's going on clearer and 
+                                 *    therefore easier to maintain.
+                                 *  @param colNo the number of the column header clicked
+                                 */
+                                $scope.sortColumn = function (colNo) {
+                                    $scope.sortDescending = lastSortColumnNo === colNo && !lastSortDescending;
+                                    // true to sort in descending order, false to sort in ascending order
+                                    // will be false if sorting a new column or last sort was descending
+                                    if (colNo === 2) {
+                                        // this is the Name column
+                                        $scope.sortField = "name";
+                                        // the following statement was used in a previous version of this app
+                                        // before adding the orderBy filter to the ng-repeat directive
+                                        //    $scope.jsonData.data.RECORDS.sort( sort_by( "student_name", boolSortAscending ) ) ;
+                                    } else if (colNo === 3) {
+                                        $scope.sortField = "DOR";
+                                    } else if (colNo === 4) {
+                                        // this is the Submit Date & Time column
+                                        $scope.sortField = "platform";
+                                        // the following statement was used in a previous version of this app
+                                        // before adding the orderBy filter to the ng-repeat directive
+                                        //    $scope.jsonData.data.RECORDS.sort( sort_by( "millisecs", boolSortAscending ) ) ;
+                                    }
+                                    // save the sort paramesters for the next click
+                                    lastSortDescending = $scope.sortDescending;
+                                    lastSortColumnNo = colNo;
+                                };
+
+                            }
+                    );
+        </script>
+
+        <!-- filter functions for this app - created by Prof. Heines -->
+        <script src="js/jmh-assn09-filters.js"></script>
+
+        <!-- CSS Reset. Source can be found in the header of the CSS file itself. -->
+        <link href="css/reset.css" rel="stylesheet">
+
+        <!-- My CSS file for this assignment. -->
+        <link rel="stylesheet" type="text/css" href="css/assignment9.css">
+    </head>
+
+    <body>
+        <!-- the outer view -->
+        <div>
+
+            <!-- page head -->
+            <h2 id="maintitle">List of games in the Legend of Zelda Franchise</h2>
+
+            <!-- directions -->
+            <p><em>Click any non-black header row cell to sort the list.</em></p>
+
+            <div id = "tbl" ng-controller="ZeldaCtrl" >
+                <!-- the table controlled by the AngularJS controller -->
+                <table id="tblGames">
+                    <!-- the column heads -->
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th ng-click="sortColumn(2)">Name</th>
+                            <th ng-click="sortColumn(3)">Release<br>Date</th>
+                            <th ng-click="sortColumn(4)">Platform</th>
+                        </tr>
+                    </thead>
+                    <!-- 
+                      AngularJS template for each row of the table 
+                      the ng-model attribute causes the data to be re-rendered when the jsonData changes
+                    -->
+                    <tbody ng-model="jsonData">
+                        <tr ng-repeat="oneSubmit in jsonData.data.RECORDS| orderBy : sortField : sortDescending">
+
+                            <!-- the built-in AngularJS loop index -->
+                            <td>{{$index| increment}}</td>
+
+                            <!-- the game's name -->
+                            <td>{{oneSubmit.name}}</td>
+
+                            <!-- 
+                              The date the game was released - formatted using the AngularJS date formatter
+                            -->
+                            <td>{{oneSubmit.DOR| date:"MMMM d, yyyy"}}</td>
+                            <td>{{oneSubmit.platform}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </body>
+</html>
