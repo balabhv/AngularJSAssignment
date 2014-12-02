@@ -39,6 +39,7 @@ p {
     margin-left: 10px;
     margin-bottom: 10px;
     color: black;
+    width: 98%
 }
 
 /* add borders and padding to the table head and body cells */
@@ -49,22 +50,16 @@ p {
 
 /* reverse video header row */
 #tblGames thead tr th {
-    color: white ;
+    color: #EFB100 ;
     background-color: black ;
 }
-
-/* add white right borders to adjacent black header row cells */
-#tblGames thead tr th:nth-child( 5 ) {
-    border-right: 1px solid white ;
-}
-
 
 /* indicate that certain columns are clickable */
 #tblGames thead tr th:nth-child(2),
 #tblGames thead tr th:nth-child(3),
 #tblGames thead tr th:nth-child(4) {
     color: black ;
-    background-color: lightgreen ;
+    background-color: #7C8A79 ;
 }
 
 /* handle rollovers on clickable columns */
@@ -73,7 +68,7 @@ p {
 #tblGames thead tr th:nth-child(4):hover {
     cursor: pointer ;
     color: black ;
-    background-color: yellow ;
+    background-color: #EFB100 ;
 }
 
 /* align all table body cells to the top of their cells*/
@@ -81,9 +76,8 @@ p {
     vertical-align: top ;
 }
 
-/* center the cells in the 1st and 4th columns of the table */
-#tblGames tbody tr td:nth-child(1),
-#tblGames tbody tr td:nth-child(5) {
+/* center the cells */
+#tblGames tbody tr td{
     text-align: center ;
 }
 
@@ -93,19 +87,67 @@ p {
 }
 
 #tblGames tbody tr:hover {
-    background-color: yellow;
+    background-color: #EFB100;
     color:black;
 }
 
-#tblGames tbody tr td {
+#tblGames tbody tr td:hover {
+    background-color: inherit;
+}
+
+#tblGames tbody tr {
     background-color: rgba(255,255,255,0.6)
 }
 
-#tbl {
+#tbl, #footer, #checkbox {
     background-color: rgba(3, 175, 247, 0.4);
     margin-top: 10px;
     padding: 10px;
     margin-left: 20px;
     margin-right: 20px;
     border: 5px solid #EFB100;
+    
+}
+
+#checkbox {
+    background-color: black;
+}
+
+.cover {
+    max-width: 120px;
+}
+
+/* These format the footer. */
+
+#footer footer div{
+    border: 0px;
+}
+
+#footer footer #left {
+    float:left;
+    width:40%;
+    margin-left: 20px;
+}
+
+#footer footer #center {
+    float:left;
+}
+
+#footer footer #right {
+    float:right;
+    margin-right: 20px;
+}
+
+#footer {
+    min-height: 50px;
+}
+
+a {
+    color: #7C8A79;
+    text-decoration: none;
+    padding-top: 30px;
+}
+
+a:hover {
+    color: #EFB100;
 }

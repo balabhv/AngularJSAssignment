@@ -19,6 +19,9 @@
 
         <!-- Professor Heines's collection of utility functions -->
         <script src="js/jmh-utilities.js"></script>
+        
+        <!-- Favicon link -->
+        <link rel='shortcut icon' href="favicon.ico">
 
         <!-- 
             The below script was originally written by Prof. Heines,
@@ -96,6 +99,8 @@
                                     lastSortDescending = $scope.sortDescending;
                                     lastSortColumnNo = colNo;
                                 };
+                                
+                                $scope.showImages = true;
 
                             }
                     );
@@ -122,6 +127,7 @@
             <p><em>Click any non-black header row cell to sort the list.</em></p>
 
             <div id = "tbl" ng-controller="ZeldaCtrl" >
+                <div id='checkbox'><span>Show Cover Images: </span><input type='checkbox' ng-model="showImages"></div>
                 <!-- the table controlled by the AngularJS controller -->
                 <table id="tblGames">
                     <!-- the column heads -->
@@ -131,6 +137,7 @@
                             <th ng-click="sortColumn(2)">Name</th>
                             <th ng-click="sortColumn(3)">Release<br>Date</th>
                             <th ng-click="sortColumn(4)">Platform</th>
+                            <th ng-show="showImages">Cover</th>
                         </tr>
                     </thead>
                     <!-- 
@@ -151,12 +158,28 @@
                             -->
                             <td>{{oneSubmit.DOR| date:"MMMM d, yyyy"}}</td>
                             <td>{{oneSubmit.platform}}</td>
+                            <td ng-show="showImages"><img alt='Cover for: {{oneSubmit.name}}' class='cover' ng-src='{{oneSubmit.coverURL}}'></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
 
+        </div>
+        <!-- A footer div that contains the View Source, View CSS, and View Javascript links. -->
+        <div id="footer">
+            <footer>
+                <div id="left">
+                    <!-- Note: This link DOESN'T work in IE. -->
+                    <a href="#" onClick='window.location = "view-source:" + window.location.href'>View HTML</a>
+                </div>
+                <div id="center">
+                    <a href="css/assignment9.css">View CSS</a>
+                </div>
+                <div id="right">
+                    <a href="json/listOfZeldaTitles.json">View JSON</a>
+                </div>
+            </footer>
         </div>
     </body>
 </html>
