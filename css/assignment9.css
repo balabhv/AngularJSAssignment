@@ -149,6 +149,7 @@ p {
 
 #footer {
     min-height: 50px;
+    margin-bottom: 40px;
 }
 
 /* Color all links and remove the underline. */
