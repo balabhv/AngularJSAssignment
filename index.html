@@ -15,11 +15,9 @@
         <!-- this is version 1.2.27 -->
         <script src="js/libs/angular.js/angular.js"></script>
 
-        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-
         <!-- Professor Heines's collection of utility functions -->
         <script src="js/jmh-utilities.js"></script>
-        
+
         <!-- Favicon link -->
         <link rel='shortcut icon' href="favicon.ico">
 
@@ -38,8 +36,6 @@
             // set up AngularJS module, note that name must be the same as that in the 
             //    ng-app attribute of the html tag above
             var myApp = angular.module('ZeldaApp', []);
-
-
 
             // set a constant to the JSON file path
             myApp.constant("jsonUrl", "json/listOfZeldaTitles.json");
@@ -62,7 +58,7 @@
                                         });                             //    error returned by the Ajax call
 
 
-                                // set the initial sort field (student name) and sort order (ascending)
+                                // set the initial sort field (release date) and sort order (ascending)
                                 $scope.sortField = "DOR";
                                 $scope.sortDescending = false;
 
@@ -83,23 +79,18 @@
                                     if (colNo === 2) {
                                         // this is the Name column
                                         $scope.sortField = "name";
-                                        // the following statement was used in a previous version of this app
-                                        // before adding the orderBy filter to the ng-repeat directive
-                                        //    $scope.jsonData.data.RECORDS.sort( sort_by( "student_name", boolSortAscending ) ) ;
                                     } else if (colNo === 3) {
+                                        // this is the Date of Release column
                                         $scope.sortField = "DOR";
                                     } else if (colNo === 4) {
-                                        // this is the Submit Date & Time column
+                                        // this is the Platform column
                                         $scope.sortField = "platform";
-                                        // the following statement was used in a previous version of this app
-                                        // before adding the orderBy filter to the ng-repeat directive
-                                        //    $scope.jsonData.data.RECORDS.sort( sort_by( "millisecs", boolSortAscending ) ) ;
                                     }
                                     // save the sort paramesters for the next click
                                     lastSortDescending = $scope.sortDescending;
                                     lastSortColumnNo = colNo;
                                 };
-                                
+
                                 $scope.showImages = true;
 
                             }
@@ -117,17 +108,31 @@
     </head>
 
     <body>
+        <!-- SCM Music Player http://scmplayer.net -->
+        <script type="text/javascript" src="http://scmplayer.net/script.js" 
+                data-config="{'skin':'skins/black/skin.css','volume':100,'autoplay':true,'shuffle':true,'repeat':1,'placement':'top','showplaylist':false,'playlist':[{'title':'Dragonroost Island','url':'https://www.youtube.com/watch?v=wRWq53IFXVQ'},{'title':'Dragonroost Island Zeldastep','url':'https://www.youtube.com/watch?v=kxPaLsZXjgk'},{'title':'Gerudo Valley','url':'https://www.youtube.com/watch?v=Hy0aEj85ifY'},{'title':'Gerudo Valley Zeldastep','url':'https://www.youtube.com/watch?v=DSHW_iLXTac'},{'title':'Legend of Zelda Main Theme Medley (25th Anniversary)','url':'https://www.youtube.com/watch?v=qkYSuWSPkHI'},{'title':'Lost Woods Zeldastep','url':'https://www.youtube.com/watch?v=NU75uz0b8EU'},{'title':'Song of Storms Zeldastep','url':'https://www.youtube.com/watch?v=yp3UeCguVVI'}]}" >
+            
+        </script>
+        <!-- SCM Music Player script end -->
+
         <!-- the outer view -->
         <div>
 
             <!-- page head -->
-            <h2 id="maintitle">List of games in the Legend of Zelda Franchise</h2>
+            <h1 id="maintitle">List of games in the Legend of Zelda Franchise</h1>
 
             <!-- directions -->
             <p><em>Click any non-black header row cell to sort the list.</em></p>
-
+            
+            <!-- main controller view -->
             <div id = "tbl" ng-controller="ZeldaCtrl" >
-                <div id='checkbox'><span>Show Cover Images: </span><input type='checkbox' ng-model="showImages"></div>
+                <!-- Inner div containing 'show cover images' checkbox and search input -->
+                <div id='checkbox'>
+                    <span>Show Cover Images: </span>
+                    <input type='checkbox' ng-model="showImages"><br>
+                    <span>Search: </span><input ng-model="query" type="text"/>
+
+                </div>
                 <!-- the table controlled by the AngularJS controller -->
                 <table id="tblGames">
                     <!-- the column heads -->
@@ -145,7 +150,7 @@
                       the ng-model attribute causes the data to be re-rendered when the jsonData changes
                     -->
                     <tbody ng-model="jsonData">
-                        <tr ng-repeat="oneSubmit in jsonData.data.RECORDS| orderBy : sortField : sortDescending">
+                        <tr ng-repeat="oneSubmit in jsonData.data.RECORDS| orderBy : sortField : sortDescending | filter:query">
 
                             <!-- the built-in AngularJS loop index -->
                             <td>{{$index| increment}}</td>

@@ -3,7 +3,8 @@
   Email: Virinchi_Balabhadrapatruni@student.uml.edu                            
   UMass Lowell Computer Science, 91.461 GUI Programming I                      
   Date: 11/30/2014                                                               
-  Description: CSS File created for Assignment #9.                               
+  Description: CSS File created for Assignment #9.
+  Based partially on Prof. Heines's CSS file for Assignment #9.
 */ 
 
 /* set font family and font size for entire page */
@@ -13,19 +14,21 @@ body, table {
     color: #EFB100;
 }
 
+/* set the background image */
 body {
     background-image: url('../img/bgpic.jpg');
 }
 
+/* Format the Page header */
 #maintitle {
     font-size: 25px;
     font-weight: bold;
     margin-top: 10px;
     margin-left: 10px;
     margin-bottom: 10px;
-    
 }
 
+/* Format paragraphs */
 p {
     margin-top: 10px;
     margin-left: 10px;
@@ -62,7 +65,7 @@ p {
     background-color: #7C8A79 ;
 }
 
-/* handle rollovers on clickable columns */
+/* handle hover on clickable columns */
 #tblGames thead tr th:nth-child(2):hover,
 #tblGames thead tr th:nth-child(3):hover,
 #tblGames thead tr th:nth-child(4):hover {
@@ -82,23 +85,27 @@ p {
 }
 
 /* set no break in date string column */
-#tblGames tbody tr td:nth-child(4) {
+#tblGames tbody tr td:nth-child(3) {
     white-space: nowrap ;
 }
 
+/* Highlight table row on hover */
 #tblGames tbody tr:hover {
     background-color: #EFB100;
     color:black;
 }
 
+/* highlight table cell on hover */
 #tblGames tbody tr td:hover {
     background-color: inherit;
 }
 
+/* Set table row background to slightly translucent white. */
 #tblGames tbody tr {
     background-color: rgba(255,255,255,0.6)
 }
 
+/* Set background, margins, and border of table div, checkbox div, and footer div to transplucent blue. */
 #tbl, #footer, #checkbox {
     background-color: rgba(3, 175, 247, 0.4);
     margin-top: 10px;
@@ -109,10 +116,12 @@ p {
     
 }
 
+/* Set background of div containing checkbox to black */
 #checkbox {
     background-color: black;
 }
 
+/* Set the maximum width of all cover images. */
 .cover {
     max-width: 120px;
 }
@@ -142,12 +151,19 @@ p {
     min-height: 50px;
 }
 
+/* Color all links and remove the underline. */
 a {
     color: #7C8A79;
     text-decoration: none;
     padding-top: 30px;
 }
 
+/* Color all links on hover */
 a:hover {
     color: #EFB100;
+}
+
+/* Format the label accompanying the checkbox and the search input. */
+#checkbox span, #checkbox input {
+    margin-top: 2px;
 }
