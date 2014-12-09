@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
+    Name: Virinchi Balabhadrapatruni                                             
+    Email: Virinchi_Balabhadrapatruni@student.uml.edu                            
+    UMass Lowell Computer Science, 91.461 GUI Programming I                      
+    Date: 12/8/2014                                                               
+    Description: Standalone version of the AudioPlayer AngularJS Application
+    This standalone file was left in for testing purposes.
 -->
 <html ng-app="PlayerApp">
     <head>
@@ -28,13 +31,13 @@ and open the template in the editor.
 
             // set up AngularJS module, note that name must be the same as that in the 
             //    ng-app attribute of the html tag above
-            var myApp = angular.module('PlayerApp', []);
+            var myApp2 = angular.module('PlayerApp', []);
 
             // set a constant to the JSON file path
-            myApp.constant("jsonUrl", "json/songs.json");
+            myApp2.constant("jsonUrl", "json/songs.json");
 
             // add business logic to the app controller
-            myApp.controller('PlayerCtrl',
+            myApp2.controller('PlayerCtrl',
                     /** Read JSON data using Ajax - adapted from Pro AngularJS, p. 149.
                      *  @param $scope  the standard AngularJS model scope
                      *  @param $http   the built-in AngularJS http object containing the get function
@@ -45,6 +48,12 @@ and open the template in the editor.
                                 $http.get(jsonUrl)                // perform the Ajax call
                                         .success(function (data) {      // execute this function if the Ajax succeeds
                                             $scope.jsonData.data = data;
+                                            $scope.shuffle = function (o) { //v1.0
+                                                for (var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x)
+                                                    ;
+                                                return o;
+                                            };
+                                            $scope.jsonData.data.RECORDS = $scope.shuffle($scope.jsonData.data.RECORDS);
                                             $scope.currentSong = $scope.jsonData.data.RECORDS[0].src;
                                             $scope.currentSongIndex = 0;
                                             $scope.currentSongTitle = $scope.jsonData.data.RECORDS[0].title;
@@ -60,95 +69,122 @@ and open the template in the editor.
                                     $scope.showSongs = !$scope.showSongs;
                                 };
 
+                                $scope.loop = false;
 
 
                                 angular.element(document).ready(function () {
                                     var audio = document.getElementById('audioplayer');
                                     audio.addEventListener('ended', function () {
-                                        $scope.nextSong();
+                                        if (!$scope.loop) {
+                                            $scope.nextSong();
+                                        } else {
+                                            this.currentTime = 0;
+                                            this.play();
+                                        }
+
                                     });
                                 });
 
                                 $scope.prevClicked = false;
 
-                                $scope.changeSong = function (event) {
-                                    console.log('Here is some jQuery');
+                                $scope.changeSong = function (oneSubmit) {
+
                                     var audio = document.getElementById('audioplayer');
-                                    audio.setAttribute('src', event.target.id);
-                                    $scope.currentSong = event.target.id;
+                                    audio.setAttribute('src', oneSubmit.src);
+
+                                    $scope.currentSong = oneSubmit.src;
                                     for (var i = 0; i < $scope.jsonData.data.RECORDS.length; i++) {
                                         var obj = $scope.jsonData.data.RECORDS[i];
                                         if (obj.src === $scope.currentSong) {
                                             $scope.currentSongIndex = i;
                                             $scope.currentSongTitle = obj.title;
+                                            console.log('Current Title: ' + $scope.currentSongTitle);
                                             break;
                                         }
                                     }
-                                    console.log('Here is some more jQuery');
+
+                                    var temparr = [];
+                                    for (var i = 0; i < $scope.jsonData.data.RECORDS.length; i++) {
+                                        if (i !== $scope.currentSongIndex) {
+                                            temparr[temparr.length] = $scope.jsonData.data.RECORDS[i];
+                                        }
+                                    }
+                                    temparr = $scope.shuffle(temparr);
+                                    $scope.jsonData.data.RECORDS[0] = $scope.jsonData.data.RECORDS[$scope.currentSongIndex];
+                                    for (var i = 1; i < $scope.jsonData.data.RECORDS.length; i++) {
+                                        $scope.jsonData.data.RECORDS[i] = temparr[i - 1];
+                                    }
+
+                                    $scope.currentSongIndex = 0;
+
                                     //audio.load(); //call this to just preload the audio without playing
                                     audio.play(); //call this to play the song right away
-                                    console.log('The song should be playing now');
+                                    $scope.toggle();
+                                    $scope.$apply();
+
                                 };
 
                                 $scope.prevSong = function () {
                                     if ($scope.currentSongIndex === 0) {
-                                        console.log('Here is some jQuery');
+
                                         var audio = document.getElementById('audioplayer');
                                         audio.currentTime = 0;
-                                        console.log('Here is some more jQuery');
+
                                         //audio.load(); //call this to just preload the audio without playing
                                         audio.play(); //call this to play the song right away
-                                        console.log('The song should be playing now');
+
                                     } else {
                                         if (!$scope.prevClicked) {
                                             var audio = document.getElementById('audioplayer');
                                             audio.currentTime = 0;
                                             $scope.prevClicked = true;
                                             window.setTimeout(function () {
-                                               $scope.prevClicked = false; 
+                                                $scope.prevClicked = false;
                                             }, 500);
                                         } else {
                                             $scope.prevClickCount = 0;
                                             $scope.currentSongIndex = $scope.currentSongIndex - 1;
-                                            console.log('Here is some jQuery');
+
                                             var audio = document.getElementById('audioplayer');
                                             audio.setAttribute('src', $scope.jsonData.data.RECORDS[$scope.currentSongIndex].src);
                                             $scope.currentSong = $scope.jsonData.data.RECORDS[$scope.currentSongIndex].src;
                                             $scope.currentSongTitle = $scope.jsonData.data.RECORDS[$scope.currentSongIndex].title;
-                                            console.log('Here is some more jQuery');
+                                            console.log('Current Title: ' + $scope.currentSongTitle);
                                             //audio.load(); //call this to just preload the audio without playing
                                             audio.play(); //call this to play the song right away
-                                            console.log('The song should be playing now');
+
                                         }
 
                                     }
+                                    $scope.$apply();
 
                                 };
 
                                 $scope.nextSong = function () {
                                     if ($scope.currentSongIndex === $scope.jsonData.data.RECORDS.length - 1) {
                                         $scope.currentSongIndex = 0;
-                                        console.log('Here is some jQuery');
+
                                         var audio = document.getElementById('audioplayer');
                                         audio.setAttribute('src', $scope.jsonData.data.RECORDS[$scope.currentSongIndex].src);
                                         $scope.currentSong = $scope.jsonData.data.RECORDS[$scope.currentSongIndex].src;
                                         $scope.currentSongTitle = $scope.jsonData.data.RECORDS[$scope.currentSongIndex].title;
-                                        console.log('Here is some more jQuery');
+                                        console.log('Current Title: ' + $scope.currentSongTitle);
                                         //audio.load(); //call this to just preload the audio without playing
                                         audio.play(); //call this to play the song right away
-                                        console.log('The song should be playing now');
+
                                     } else {
                                         $scope.currentSongIndex = $scope.currentSongIndex + 1;
-                                        console.log('Here is some jQuery');
+
                                         var audio = document.getElementById('audioplayer');
                                         audio.setAttribute('src', $scope.jsonData.data.RECORDS[$scope.currentSongIndex].src);
                                         $scope.currentSong = $scope.jsonData.data.RECORDS[$scope.currentSongIndex].src;
                                         $scope.currentSongTitle = $scope.jsonData.data.RECORDS[$scope.currentSongIndex].title;
-                                        console.log('Here is some more jQuery');
+                                        console.log('Current Title: ' + $scope.currentSongTitle);
                                         //audio.load(); //call this to just preload the audio without playing
                                         audio.play(); //call this to play the song right away
-                                        console.log('The song should be playing now');
+
                                     }
+                                    $scope.$apply();
                                 };
 
 
@@ -160,7 +196,7 @@ and open the template in the editor.
         <script src="js/jmh-assn09-filters.js"></script>
     </head>
     <body ng-controller="PlayerCtrl">
-        <div id="player">
+        <div id="player" ng-app="PlayerApp" ng-controller="PlayerCtrl">
             <h3 id="songtitle">{{currentSongTitle}}</h3>
             <a id="prev-btn" ng-click="prevSong()">|&lt;&lt;</a>
             <audio id="audioplayer" controls autoplay ng-src="{{currentSong}}">
@@ -169,11 +205,15 @@ and open the template in the editor.
                 <a id="next-btn" ng-click="nextSong()">&gt;&gt;|</a>
                 <a id="show-playlist" ng-click="toggle()">|||</a> 
             </div>
+            <div id="loop">
+                <span>Loop: </span>
+                <input type='checkbox' ng-model="loop">
+            </div>
             <div id="songs-list" ng-show="showSongs">
-                <table>
+                <table id="tblSongs">
                     <tr ng-repeat="oneSubmit in jsonData.data.RECORDS">
                         <td>
-                            <div id="{{oneSubmit.src}}" class="song" ng-click="changeSong($event)">
+                            <div id='{{oneSubmit.id}}' class="song" ng-click="changeSong(oneSubmit)">
                                 <h3>{{oneSubmit.title}}</h3>
                             </div>
                         </td>

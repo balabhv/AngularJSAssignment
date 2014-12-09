@@ -14,6 +14,8 @@
 
         <!-- this is version 1.2.27 -->
         <script src="js/libs/angular.js/angular.js"></script>
+        
+        <!-- This is the jQuery script. -->
         <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 
         <!-- Professor Heines's collection of utility functions -->
@@ -23,227 +25,10 @@
         <link rel='shortcut icon' href="favicon.ico">
 
         <!-- 
-            The below scripts was originally written by Prof. Heines,
-            amd modified for this application.
+            The below scripts were originally written by Prof. Heines,
+            and modified for this application.
         -->
-        <script>
-            "use strict";  // to ensure that all variables are declared before use
-
-            // the number of the last column sorted, initialized to the date column
-            var lastSortColumnNo = 3;
-            // a flag indicating whether the last sort was ascending (true) or descending (false)
-            var lastSortDescending = false;
-
-            // set up AngularJS module, note that name must be the same as that in the 
-            //    ng-app attribute of the html tag above
-            var myApp = angular.module('ZeldaApp', []);
-
-            // set a constant to the JSON file path
-            myApp.constant("jsonUrl", "json/listOfZeldaTitles.json");
-
-            // add business logic to the app controller
-            myApp.controller('ZeldaCtrl',
-                    /** Read JSON data using Ajax - adapted from Pro AngularJS, p. 149.
-                     *  @param $scope  the standard AngularJS model scope
-                     *  @param $http   the built-in AngularJS http object containing the get function
-                     *  @param jsonUrl the app constant containing the JSON file path (defined above)
-                     */
-                            function ($scope, $http, jsonUrl) {
-                                $scope.jsonData = {};              // initialize an object in the model's scope
-                                $http.get(jsonUrl)                // perform the Ajax call
-                                        .success(function (data) {      // execute this function if the Ajax succeeds
-                                            $scope.jsonData.data = data;   // set the model's jsonData.data property to the
-                                        })                               //    data returned by the Ajax call
-                                        .error(function (error) {      // execute this function if the Ajax fails
-                                            $scope.jsonData.error = error; // set the model's jsonData.error property to the
-                                        });                             //    error returned by the Ajax call
-
-
-                                // set the initial sort field (release date) and sort order (ascending)
-                                $scope.sortField = "DOR";
-                                $scope.sortDescending = false;
-
-                                angular.element(document).ready(function () {
-                                    $('#music').load('AudioPlayer/index.html');
-                                });
-
-                                /** 
-                                 *  Sort column clicked in either ascending or descending order.
-                                 *  Note that this could also be accomplished using the built-in AngularJS orderBy
-                                 *    filter and manipulating the sort field and reverse parameters.
-                                 *  Also note that this code could also have been incorporated into the ng-click 
-                                 *    directives on the table's th elements, but doing it here gave me more central
-                                 *    control, and I think that this function makes what's going on clearer and 
-                                 *    therefore easier to maintain.
-                                 *  @param colNo the number of the column header clicked
-                                 */
-                                $scope.sortColumn = function (colNo) {
-                                    $scope.sortDescending = lastSortColumnNo === colNo && !lastSortDescending;
-                                    // true to sort in descending order, false to sort in ascending order
-                                    // will be false if sorting a new column or last sort was descending
-                                    if (colNo === 2) {
-                                        // this is the Name column
-                                        $scope.sortField = "name";
-                                    } else if (colNo === 3) {
-                                        // this is the Date of Release column
-                                        $scope.sortField = "DOR";
-                                    } else if (colNo === 4) {
-                                        // this is the Platform column
-                                        $scope.sortField = "platform";
-                                    }
-                                    // save the sort paramesters for the next click
-                                    lastSortDescending = $scope.sortDescending;
-                                    lastSortColumnNo = colNo;
-                                };
-
-                                $scope.showImages = true;
-
-                            }
-                    );
-
-                    // set up AngularJS module, note that name must be the same as that in the 
-                    //    ng-app attribute of the html tag above
-                    var myApp2 = angular.module('PlayerApp', []);
-
-                    // set a constant to the JSON file path
-                    myApp2.constant("jsonUrl", "AudioPlayer/json/songs.json");
-
-                    // add business logic to the app controller
-                    myApp2.controller('PlayerCtrl',
-                            /** Read JSON data using Ajax - adapted from Pro AngularJS, p. 149.
-                             *  @param $scope  the standard AngularJS model scope
-                             *  @param $http   the built-in AngularJS http object containing the get function
-                             *  @param jsonUrl the app constant containing the JSON file path (defined above)
-                             */
-                                    function ($scope, $http, jsonUrl) {
-                                        $scope.jsonData = {};              // initialize an object in the model's scope
-                                        $http.get(jsonUrl)                // perform the Ajax call
-                                                .success(function (data) {      // execute this function if the Ajax succeeds
-                                                    $scope.jsonData.data = data;
-                                                    $scope.shuffle = function (o) { //v1.0
-                                                        for (var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x)
-                                                            ;
-                                                        return o;
-                                                    };
-                                                    $scope.jsonData.data.RECORDS = $scope.shuffle($scope.jsonData.data.RECORDS);
-                                                    $scope.currentSong = $scope.jsonData.data.RECORDS[0].src;
-                                                    $scope.currentSongIndex = 0;
-                                                    $scope.currentSongTitle = $scope.jsonData.data.RECORDS[0].title;
-                                                    // set the model's jsonData.data property to the
-                                                })                               //    data returned by the Ajax call
-                                                .error(function (error) {      // execute this function if the Ajax fails
-                                                    $scope.jsonData.error = error; // set the model's jsonData.error property to the
-                                                });                             //    error returned by the Ajax call
-
-                                        $scope.showSongs = false;
-
-                                        $scope.toggle = function () {
-                                            $scope.showSongs = !$scope.showSongs;
-                                        };
-
-
-
-
-
-                                        angular.element(document).ready(function () {
-                                            var audio = document.getElementById('audioplayer');
-                                            audio.addEventListener('ended', function () {
-                                                $scope.nextSong();
-                                            });
-                                        });
-
-                                        $scope.prevClicked = false;
-
-                                        $scope.changeSong = function (oneSubmit) {
-
-                                            var audio = document.getElementById('audioplayer');
-                                            audio.setAttribute('src', oneSubmit.src);
-
-                                            $scope.currentSong = oneSubmit.src;
-                                            for (var i = 0; i < $scope.jsonData.data.RECORDS.length; i++) {
-                                                var obj = $scope.jsonData.data.RECORDS[i];
-                                                if (obj.src === $scope.currentSong) {
-                                                    $scope.currentSongIndex = i;
-                                                    $scope.currentSongTitle = obj.title;
-                                                    break;
-                                                }
-                                            }
-
-                                            //audio.load(); //call this to just preload the audio without playing
-                                            audio.play(); //call this to play the song right away
-                                            $scope.toggle();
-
-                                        };
-
-                                        $scope.prevSong = function () {
-                                            if ($scope.currentSongIndex === 0) {
-
-                                                var audio = document.getElementById('audioplayer');
-                                                audio.currentTime = 0;
-
-                                                //audio.load(); //call this to just preload the audio without playing
-                                                audio.play(); //call this to play the song right away
-
-                                            } else {
-                                                if (!$scope.prevClicked) {
-                                                    var audio = document.getElementById('audioplayer');
-                                                    audio.currentTime = 0;
-                                                    $scope.prevClicked = true;
-                                                    window.setTimeout(function () {
-                                                        $scope.prevClicked = false;
-                                                    }, 500);
-                                                } else {
-                                                    $scope.prevClickCount = 0;
-                                                    $scope.currentSongIndex = $scope.currentSongIndex - 1;
-
-                                                    var audio = document.getElementById('audioplayer');
-                                                    audio.setAttribute('src', $scope.jsonData.data.RECORDS[$scope.currentSongIndex].src);
-                                                    $scope.currentSong = $scope.jsonData.data.RECORDS[$scope.currentSongIndex].src;
-                                                    $scope.currentSongTitle = $scope.jsonData.data.RECORDS[$scope.currentSongIndex].title;
-
-                                                    //audio.load(); //call this to just preload the audio without playing
-                                                    audio.play(); //call this to play the song right away
-
-                                                }
-
-                                            }
-
-                                        };
-
-                                        $scope.nextSong = function () {
-                                            if ($scope.currentSongIndex === $scope.jsonData.data.RECORDS.length - 1) {
-                                                $scope.currentSongIndex = 0;
-
-                                                var audio = document.getElementById('audioplayer');
-                                                audio.setAttribute('src', $scope.jsonData.data.RECORDS[$scope.currentSongIndex].src);
-                                                $scope.currentSong = $scope.jsonData.data.RECORDS[$scope.currentSongIndex].src;
-                                                $scope.currentSongTitle = $scope.jsonData.data.RECORDS[$scope.currentSongIndex].title;
-
-                                                //audio.load(); //call this to just preload the audio without playing
-                                                audio.play(); //call this to play the song right away
-
-                                            } else {
-                                                $scope.currentSongIndex = $scope.currentSongIndex + 1;
-
-                                                var audio = document.getElementById('audioplayer');
-                                                audio.setAttribute('src', $scope.jsonData.data.RECORDS[$scope.currentSongIndex].src);
-                                                $scope.currentSong = $scope.jsonData.data.RECORDS[$scope.currentSongIndex].src;
-                                                $scope.currentSongTitle = $scope.jsonData.data.RECORDS[$scope.currentSongIndex].title;
-
-                                                //audio.load(); //call this to just preload the audio without playing
-                                                audio.play(); //call this to play the song right away
-
-                                            }
-                                        };
-
-
-                                    }
-                            );
-                            angular.element(document).ready(function () {
-                                angular.bootstrap(document.getElementById("tableApp"), ['ZeldaApp']);
-                            });
-
-        </script>
+        <script src="js/script.js"></script>
 
 
         <!-- filter functions for this app - created by Prof. Heines -->
@@ -255,19 +40,39 @@
         <!-- My CSS file for this assignment. -->
         <link rel="stylesheet" type="text/css" href="css/assignment9.css">
 
+        <!-- CSS file for audio player. -->
         <link rel="stylesheet" type="text/css" href="AudioPlayer/css/playerskin.css">
     </head>
 
     <body>
+        <!-- Audio player div -->
         <div id="player" ng-app="PlayerApp" ng-controller="PlayerCtrl">
+            <!-- Title of Song - read from JSON -->
             <h3 id="songtitle">{{currentSongTitle}}</h3>
+            <!-- Button to go to the previous song in the playlist.
+                if this button is pressed on the first song,
+                the cursor returns to the beginning of the song.
+            -->
             <a id="prev-btn" ng-click="prevSong()">|&lt;&lt;</a>
+            <!-- Audio tag (does the actual playing -->
             <audio id="audioplayer" controls autoplay ng-src="{{currentSong}}">
             </audio>
+            <!-- div for next button and show playlist button -->
             <div id="controls-right">
+                <!-- Button to go to the next song in the playlist
+                    if this button is pressed on the last song,
+                    the song goes back to the first song in the playlist.
+                -->
                 <a id="next-btn" ng-click="nextSong()">&gt;&gt;|</a>
+                <!-- Toggles the playlist's visibility. -->
                 <a id="show-playlist" ng-click="toggle()">|||</a> 
             </div>
+            <div id="loop">
+                <!-- checkbox to select whether to loop the current song. -->
+                <span>Loop: </span>
+                <input type='checkbox' ng-model="loop">
+            </div>
+            <!-- div for list of songs. -->
             <div id="songs-list" ng-show="showSongs">
                 <table id="tblSongs">
                     <tr ng-repeat="oneSubmit in jsonData.data.RECORDS">
@@ -347,10 +152,10 @@
                     <a href="#" onClick='window.location = "view-source:" + window.location.href'>View HTML</a>
                 </div>
                 <div id="center">
-                    <a href="http://balabhv.github.io/AngularJSAssignment/css/assignment9.css">View CSS</a>
+                    <a href="css/assignment9.css">View CSS</a>
                 </div>
                 <div id="right">
-                    <a href="http://balabhv.github.io/AngularJSAssignment/json/listOfZeldaTitles.json">View JSON</a>
+                    <a href="json/listOfZeldaTitles.json">View JSON</a>
                 </div>
             </footer>
         </div>
