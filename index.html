@@ -7,13 +7,14 @@
     Description: Modified version of Prof. Heines's
     Assignment #9 starter HTML File
 -->
-<html ng-app="ZeldaApp">
+<html>
     <head>
         <meta charset="utf-8">
         <title>List of Zelda Games</title>
 
         <!-- this is version 1.2.27 -->
         <script src="js/libs/angular.js/angular.js"></script>
+        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 
         <!-- Professor Heines's collection of utility functions -->
         <script src="js/jmh-utilities.js"></script>
@@ -22,13 +23,13 @@
         <link rel='shortcut icon' href="favicon.ico">
 
         <!-- 
-            The below script was originally written by Prof. Heines,
+            The below scripts was originally written by Prof. Heines,
             amd modified for this application.
         -->
         <script>
             "use strict";  // to ensure that all variables are declared before use
 
-            // the number of the last column sorted, initialized to the Student Name column
+            // the number of the last column sorted, initialized to the date column
             var lastSortColumnNo = 3;
             // a flag indicating whether the last sort was ascending (true) or descending (false)
             var lastSortDescending = false;
@@ -61,6 +62,10 @@
                                 // set the initial sort field (release date) and sort order (ascending)
                                 $scope.sortField = "DOR";
                                 $scope.sortDescending = false;
+
+                                angular.element(document).ready(function () {
+                                    $('#music').load('AudioPlayer/index.html');
+                                });
 
                                 /** 
                                  *  Sort column clicked in either ascending or descending order.
@@ -95,7 +100,151 @@
 
                             }
                     );
+
+                    // set up AngularJS module, note that name must be the same as that in the 
+                    //    ng-app attribute of the html tag above
+                    var myApp2 = angular.module('PlayerApp', []);
+
+                    // set a constant to the JSON file path
+                    myApp2.constant("jsonUrl", "AudioPlayer/json/songs.json");
+
+                    // add business logic to the app controller
+                    myApp2.controller('PlayerCtrl',
+                            /** Read JSON data using Ajax - adapted from Pro AngularJS, p. 149.
+                             *  @param $scope  the standard AngularJS model scope
+                             *  @param $http   the built-in AngularJS http object containing the get function
+                             *  @param jsonUrl the app constant containing the JSON file path (defined above)
+                             */
+                                    function ($scope, $http, jsonUrl) {
+                                        $scope.jsonData = {};              // initialize an object in the model's scope
+                                        $http.get(jsonUrl)                // perform the Ajax call
+                                                .success(function (data) {      // execute this function if the Ajax succeeds
+                                                    $scope.jsonData.data = data;
+                                                    $scope.shuffle = function (o) { //v1.0
+                                                        for (var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x)
+                                                            ;
+                                                        return o;
+                                                    };
+                                                    $scope.jsonData.data.RECORDS = $scope.shuffle($scope.jsonData.data.RECORDS);
+                                                    $scope.currentSong = $scope.jsonData.data.RECORDS[0].src;
+                                                    $scope.currentSongIndex = 0;
+                                                    $scope.currentSongTitle = $scope.jsonData.data.RECORDS[0].title;
+                                                    // set the model's jsonData.data property to the
+                                                })                               //    data returned by the Ajax call
+                                                .error(function (error) {      // execute this function if the Ajax fails
+                                                    $scope.jsonData.error = error; // set the model's jsonData.error property to the
+                                                });                             //    error returned by the Ajax call
+
+                                        $scope.showSongs = false;
+
+                                        $scope.toggle = function () {
+                                            $scope.showSongs = !$scope.showSongs;
+                                        };
+
+
+
+
+
+                                        angular.element(document).ready(function () {
+                                            var audio = document.getElementById('audioplayer');
+                                            audio.addEventListener('ended', function () {
+                                                $scope.nextSong();
+                                            });
+                                        });
+
+                                        $scope.prevClicked = false;
+
+                                        $scope.changeSong = function (oneSubmit) {
+
+                                            var audio = document.getElementById('audioplayer');
+                                            audio.setAttribute('src', oneSubmit.src);
+
+                                            $scope.currentSong = oneSubmit.src;
+                                            for (var i = 0; i < $scope.jsonData.data.RECORDS.length; i++) {
+                                                var obj = $scope.jsonData.data.RECORDS[i];
+                                                if (obj.src === $scope.currentSong) {
+                                                    $scope.currentSongIndex = i;
+                                                    $scope.currentSongTitle = obj.title;
+                                                    break;
+                                                }
+                                            }
+
+                                            //audio.load(); //call this to just preload the audio without playing
+                                            audio.play(); //call this to play the song right away
+                                            $scope.toggle();
+
+                                        };
+
+                                        $scope.prevSong = function () {
+                                            if ($scope.currentSongIndex === 0) {
+
+                                                var audio = document.getElementById('audioplayer');
+                                                audio.currentTime = 0;
+
+                                                //audio.load(); //call this to just preload the audio without playing
+                                                audio.play(); //call this to play the song right away
+
+                                            } else {
+                                                if (!$scope.prevClicked) {
+                                                    var audio = document.getElementById('audioplayer');
+                                                    audio.currentTime = 0;
+                                                    $scope.prevClicked = true;
+                                                    window.setTimeout(function () {
+                                                        $scope.prevClicked = false;
+                                                    }, 500);
+                                                } else {
+                                                    $scope.prevClickCount = 0;
+                                                    $scope.currentSongIndex = $scope.currentSongIndex - 1;
+
+                                                    var audio = document.getElementById('audioplayer');
+                                                    audio.setAttribute('src', $scope.jsonData.data.RECORDS[$scope.currentSongIndex].src);
+                                                    $scope.currentSong = $scope.jsonData.data.RECORDS[$scope.currentSongIndex].src;
+                                                    $scope.currentSongTitle = $scope.jsonData.data.RECORDS[$scope.currentSongIndex].title;
+
+                                                    //audio.load(); //call this to just preload the audio without playing
+                                                    audio.play(); //call this to play the song right away
+
+                                                }
+
+                                            }
+
+                                        };
+
+                                        $scope.nextSong = function () {
+                                            if ($scope.currentSongIndex === $scope.jsonData.data.RECORDS.length - 1) {
+                                                $scope.currentSongIndex = 0;
+
+                                                var audio = document.getElementById('audioplayer');
+                                                audio.setAttribute('src', $scope.jsonData.data.RECORDS[$scope.currentSongIndex].src);
+                                                $scope.currentSong = $scope.jsonData.data.RECORDS[$scope.currentSongIndex].src;
+                                                $scope.currentSongTitle = $scope.jsonData.data.RECORDS[$scope.currentSongIndex].title;
+
+                                                //audio.load(); //call this to just preload the audio without playing
+                                                audio.play(); //call this to play the song right away
+
+                                            } else {
+                                                $scope.currentSongIndex = $scope.currentSongIndex + 1;
+
+                                                var audio = document.getElementById('audioplayer');
+                                                audio.setAttribute('src', $scope.jsonData.data.RECORDS[$scope.currentSongIndex].src);
+                                                $scope.currentSong = $scope.jsonData.data.RECORDS[$scope.currentSongIndex].src;
+                                                $scope.currentSongTitle = $scope.jsonData.data.RECORDS[$scope.currentSongIndex].title;
+
+                                                //audio.load(); //call this to just preload the audio without playing
+                                                audio.play(); //call this to play the song right away
+
+                                            }
+                                        };
+
+
+                                    }
+                            );
+                            angular.element(document).ready(function () {
+                                angular.bootstrap(document.getElementById("tableApp"), ['ZeldaApp']);
+                            });
+
         </script>
+
 
         <!-- filter functions for this app - created by Prof. Heines -->
         <script src="js/jmh-assn09-filters.js"></script>
@@ -105,25 +254,44 @@
 
         <!-- My CSS file for this assignment. -->
         <link rel="stylesheet" type="text/css" href="css/assignment9.css">
+
+        <link rel="stylesheet" type="text/css" href="AudioPlayer/css/playerskin.css">
     </head>
 
     <body>
-        <!-- SCM Music Player http://scmplayer.net -->
-        <script type="text/javascript" src="http://scmplayer.net/script.js" 
-                data-config="{'skin':'skins/black/skin.css','volume':100,'autoplay':true,'shuffle':true,'repeat':1,'placement':'top','showplaylist':false,'playlist':[{'title':'Dragonroost Island','url':'https://www.youtube.com/watch?v=wRWq53IFXVQ'},{'title':'Dragonroost Island Zeldastep','url':'https://www.youtube.com/watch?v=kxPaLsZXjgk'},{'title':'Gerudo Valley','url':'https://www.youtube.com/watch?v=Hy0aEj85ifY'},{'title':'Gerudo Valley Zeldastep','url':'https://www.youtube.com/watch?v=DSHW_iLXTac'},{'title':'Legend of Zelda Main Theme Medley (25th Anniversary)','url':'https://www.youtube.com/watch?v=qkYSuWSPkHI'},{'title':'Lost Woods Zeldastep','url':'https://www.youtube.com/watch?v=NU75uz0b8EU'},{'title':'Song of Storms Zeldastep','url':'https://www.youtube.com/watch?v=yp3UeCguVVI'}]}" >
-            
-        </script>
-        <!-- SCM Music Player script end -->
+        <div id="player" ng-app="PlayerApp" ng-controller="PlayerCtrl">
+            <h3 id="songtitle">{{currentSongTitle}}</h3>
+            <a id="prev-btn" ng-click="prevSong()">|&lt;&lt;</a>
+            <audio id="audioplayer" controls autoplay ng-src="{{currentSong}}">
+            </audio>
+            <div id="controls-right">
+                <a id="next-btn" ng-click="nextSong()">&gt;&gt;|</a>
+                <a id="show-playlist" ng-click="toggle()">|||</a> 
+            </div>
+            <div id="songs-list" ng-show="showSongs">
+                <table id="tblSongs">
+                    <tr ng-repeat="oneSubmit in jsonData.data.RECORDS">
+                        <td>
+                            <div id='{{oneSubmit.id}}' class="song" ng-click="changeSong(oneSubmit)">
+                                <h3>{{oneSubmit.title}}</h3>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+
 
         <!-- the outer view -->
-        <div>
+        <div id='tableApp'>
 
             <!-- page head -->
             <h1 id="maintitle">List of games in the Legend of Zelda Franchise</h1>
 
             <!-- directions -->
             <p><em>Click any non-black header row cell to sort the list.</em></p>
-            
+
             <!-- main controller view -->
             <div id = "tbl" ng-controller="ZeldaCtrl" >
                 <!-- Inner div containing 'show cover images' checkbox and search input -->
@@ -179,10 +347,10 @@
                     <a href="#" onClick='window.location = "view-source:" + window.location.href'>View HTML</a>
                 </div>
                 <div id="center">
-                    <a href="css/assignment9.css">View CSS</a>
+                    <a href="http://balabhv.github.io/AngularJSAssignment/css/assignment9.css">View CSS</a>
                 </div>
                 <div id="right">
-                    <a href="json/listOfZeldaTitles.json">View JSON</a>
+                    <a href="http://balabhv.github.io/AngularJSAssignment/json/listOfZeldaTitles.json">View JSON</a>
                 </div>
             </footer>
         </div>

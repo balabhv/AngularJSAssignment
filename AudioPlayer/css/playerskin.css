@@ -1,0 +1,79 @@
+
+#player {
+    background-color: black;
+    padding: 5px;
+    vertical-align: central;
+    
+    // the following code is obtained from:
+    // http://stackoverflow.com/questions/9620122/stop-html-text-being-highlighted
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    border-bottom: 2px solid white;
+}
+
+body {
+    margin: 0px;
+}
+
+audio {
+    width: 1150px;
+
+}
+
+#prev-btn {
+    float: left;
+    padding-top: 5px;
+    color: #999999;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+#controls-right {
+    float: right;
+    padding-top: 5px;
+    color: #999999;
+    font-weight: bold;
+
+}
+
+#next-btn {
+    padding-right: 5px;
+}
+
+#prev-btn:hover, a:hover {
+    color: #cccccc;
+    cursor: default;
+}
+
+#tblSongs {
+    background-color: white;
+    float: right;
+}
+
+.song {
+    background-color: #cccccc;
+    color: black;
+    
+}
+
+.song:hover {
+    background-color: #999999;
+}
+
+.song * {
+    padding: 5px;
+    margin: 0px;
+}
+
+#songtitle {
+    color: white;
+    padding: 5px;
+    margin: 0px;
+}
+
+
+

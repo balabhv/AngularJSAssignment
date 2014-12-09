@@ -16,7 +16,8 @@ body, table {
 
 /* set the background image */
 body {
-    background-image: url('../img/bgpic.jpg');
+    //background-image: url('../img/bgpic.jpg');
+    background-color: black;
 }
 
 /* Format the Page header */

@@ -1,0 +1,58 @@
+{
+    "RECORDS": [
+        {
+            "title": "The Legend of Zelda Main Theme - Legend of Zelda 25th Anniversary Orchestra",
+            "src": "/AngularJSAssignment/AudioPlayer/song/MainTheme.mp3",
+            "type": "audio/mpeg",
+            "id": "MainTheme"
+        },
+        {
+            "title": "Lost Woods",
+            "src": "/AngularJSAssignment/AudioPlayer/song/Woods.mp3",
+            "type": "audio/mpeg",
+            "id": "Woods"
+        },
+        {
+            "title": "Lost Woods Zeldastep",
+            "src": "/AngularJSAssignment/AudioPlayer/song/WoodsZeldastep.mp3",
+            "type": "audio/mpeg",
+            "id": "WoodsZeldastep"
+        },
+        {
+            "title": "Song of Storms",
+            "src": "/AngularJSAssignment/AudioPlayer/song/Storms.mp3",
+            "type": "audio/mpeg",
+            "id": "Storms"
+        },
+        {
+            "title": "Song of Storms Zeldastep",
+            "src": "/AngularJSAssignment/AudioPlayer/song/StormsZeldastep.mp3",
+            "type": "audio/mpeg",
+            "id": "StormsZeldastep"
+        },
+        {
+            "title": "Gerudo Valley",
+            "src": "/AngularJSAssignment/AudioPlayer/song/Gerudo.mp3",
+            "type": "audio/mpeg",
+            "id": "Gerudo"
+        },
+        {
+            "title": "Gerudo Valley Zeldastep",
+            "src": "/AngularJSAssignment/AudioPlayer/song/GerudoZeldastep.mp3",
+            "type": "audio/mpeg",
+            "id": "GerudoZeldastep"
+        },
+        {
+            "title": "Dragonroost Island",
+            "src": "/AngularJSAssignment/AudioPlayer/song/DragonRoostIsland.mp3",
+            "type": "audio/mpeg",
+            "id": "DragonRoost"
+        },
+        {
+            "title": "Dragonroost Island Zeldastep",
+            "src": "/AngularJSAssignment/AudioPlayer/song/DragonRoostIslandZeldastep.mp3",
+            "type": "audio/mpeg",
+            "id": "DragonRoostZeldastep"
+        }
+    ]
+}
