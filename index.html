@@ -65,7 +65,7 @@
                 -->
                 <a id="next-btn" ng-click="nextSong()">&gt;&gt;|</a>
                 <!-- Toggles the playlist's visibility. -->
-                <a id="show-playlist" ng-click="toggle()">|||</a> 
+                <a id="show-playlist" ng-click="toggle()">&#9776;</a> 
             </div>
             <div id="loop">
                 <!-- checkbox to select whether to loop the current song. -->
@@ -77,7 +77,7 @@
                 <table id="tblSongs">
                     <tr ng-repeat="oneSubmit in jsonData.data.RECORDS">
                         <td>
-                            <div id='{{oneSubmit.id}}' class="song" ng-click="changeSong(oneSubmit)">
+                            <div id='song{{$index| increment}}' class="song" ng-click="changeSong(oneSubmit)">
                                 <h3>{{oneSubmit.title}}</h3>
                             </div>
                         </td>

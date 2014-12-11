@@ -127,6 +127,8 @@ myApp2.controller('PlayerCtrl',
                     
                     // default: don't loop the current song
                     $scope.loop = false;
+                    
+                    
 
                     // set a listener on the audio tag so that when one song ends,
                     // the next song in the playlist begins automatically.

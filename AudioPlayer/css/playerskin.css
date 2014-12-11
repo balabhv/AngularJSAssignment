@@ -80,6 +80,7 @@ audio {
 /*// style hover for each row in the table of songs*/
 .song:hover {
     background-color: #999999;
+    cursor: default;
 }
 
 /*// style all children of each row in the table of songs*/
@@ -93,6 +94,10 @@ audio {
     color: white;
     padding: 5px;
     margin: 0px;
+}
+
+#show-playlist {
+    font-size: 20px;
 }
 
 

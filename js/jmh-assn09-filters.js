@@ -110,6 +110,34 @@ myApp.filter("increment", function () {
     };
 });
 
+// add one to the numeric string selected by the AngularJS template
+myApp2.filter("increment", function () {
+    /**
+     *  @param num the string selected by the AngularJS template, which should be a number
+     *                note that JavaScript reports the type as "number", not "string"
+     *  @param inc the increment to add to str
+     */
+    return function (num, inc) {
+        // if the first parameter is invalid, return a blank string
+        if (typeof (num) === "undefined" || typeof (num) !== "number") {
+            return 0;
+        }
+        // if the first parameter is not a number, return 0
+        else if (typeof (inc) !== "undefined" &&
+                (typeof (inc) !== "number" || isNaN(inc))) {
+            return 0;
+            // else add one to the parameter and return the result
+        } else {
+            // if the second parameter is missing or invalid, set it 1
+            if (typeof (inc) === "undefined") {
+                inc = 1;
+            }
+            // return the incremented number
+            return num + inc;
+        }
+    };
+});
+
 // extract only the first and last names of a "LastName, FirstName MiddleName" string
 myApp.filter("firstLastOnly", function () {
     /**
